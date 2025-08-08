@@ -117,10 +117,11 @@ jobs:
       - name: Get compile-all-examples.sh
         run: |
           echo "Current directory: $PWD"
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o ./examples/board_list.txt
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o ./examples/compile-all-examples.sh
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o ./board_list.txt
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o ./compile-all-examples.sh
 
-          # Normally the examples are in the sketches directory. In the actual library here, they are in examples directory.
+          # Normally the examples are in the `sketches` directory of wolfssl-examples repo in `./Arduino` directory.
+          # In the actual library here, they are in `examples` directory.
           sed -i 's|./sketches|./examples|g' ./examples/compile-all-examples.sh
 
           # ensure we can execute the script here (permissions lost during curl)
