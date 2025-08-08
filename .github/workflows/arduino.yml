@@ -117,6 +117,11 @@ jobs:
           echo "Current directory: $PWD"
           curl -L https://raw.githubusercontent.com/gojimmypi/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o ./examples/board_list.txt
           curl -L https://raw.githubusercontent.com/gojimmypi/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o ./examples/compile-all-examples.sh
+
+          # Normally the examples are in the sketches directory. In the actual library here, they are in examples directory.
+          sed -i 's|./sketches|./examples|g' ./examples/compile-all-examples.sh
+
+          # ensure we can execute the script here (permissions lost during curl)
           chmod +x ./examples/compile-all-examples.sh
           echo "Compile script: $(ls -al ./examples/compile-all-examples.sh)"
 
