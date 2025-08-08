@@ -82,13 +82,12 @@ jobs:
 
       - name: Install wolfSSL Arduino library
         run: |
-          echo "Current pwd for wolfssl-examples clone fetch: $(pwd)"
+          echo "Current pwd for wolfssl-examples clone fetch: $PWD"
           GITHUB_WORK=$(realpath "$GITHUB_WORKSPACE/../..")
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
 
           # Typically /home/runner/work
           echo "GITHUB_WORK=$GITHUB_WORK"
-          pwd
 
           # Set default ARDUINO_ROOT. TODO: once script is updated, this should be removed.
           export ARDUINO_ROOT="$HOME/Arduino/libraries"
@@ -96,19 +95,19 @@ jobs:
 
           mkdir -p "$ARDUINO_ROOT/wolfssl"
 
-          echo "ARDUINO_ROOT=$WOLFSSL_EXAMPLES_ROOT"
-          echo "WOLFSSL_EXAMPLES_ROOT=$WOLFSSL_EXAMPLES_ROOT"
+          echo "cp  [root files]     \"$ARDUINO_ROOT/wolfssl/src\""
+          for f in ./*; do
+            if [ -f "$f" ]; then
+              cp "$f" "$ARDUINO_ROOT/wolfssl/"
+            fi
+          done
 
-          echo "cp     \"./" \"$ARDUINO_ROOT/wolfssl\""
-                cp      "./"  "$ARDUINO_ROOT/wolfssl"
-
-          echo "cp -r  \"./src/\" \"$ARDUINO_ROOT/wolfssl/src\""
-                cp -r   "./src"    "$ARDUINO_ROOT/wolfssl/src"
+          echo "cp -r  \"./src\"      \"$ARDUINO_ROOT/wolfssl/src\""
+                cp -r    ./src         "$ARDUINO_ROOT/wolfssl/src"
 
           echo "cp -r  \"./examples\" \"$ARDUINO_ROOT/wolfssl/examples\""
-                cp -r   "./examples"   "$ARDUINO_ROOT/wolfssl/examples"
+                cp -r    ./examples    "$ARDUINO_ROOT/wolfssl/examples"
 
-          popd
 
       - name: List installed Arduino libraries
         run: arduino-cli lib list
