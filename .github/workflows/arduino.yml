@@ -16,20 +16,8 @@ name: Arduino CI Build
 on:
   push:
     branches: [ '**', 'master', 'main', 'release/**' ]
-    paths:
-      - 'github/workflows/arduino.yml'
-      - 'IDE/ARDUINO/**'
-      - 'src/**'
-      - 'wolfcrypt/**'
-      - 'wolfssl/**'
   pull_request:
     branches: [ '**' ]
-    paths:
-      - 'github/workflows/arduino.yml'
-      - 'IDE/ARDUINO/**'
-      - 'src/**'
-      - 'wolfcrypt/**'
-      - 'wolfssl/**'
   workflow_dispatch:
 
 concurrency:
@@ -133,14 +121,6 @@ jobs:
 
           # Typically /home/runner/work
           echo "GITHUB_WORK=$GITHUB_WORK"
-
-          pwd
-          echo "Parent 1"
-          ls ../
-          echo "Parent 2"
-          ls ../../
-          echo "Parent 3"
-          ls ../../../
 
           echo "Current pwd: $(pwd)"
           export WOLFSSL_EXAMPLES_ROOT="./examples"
