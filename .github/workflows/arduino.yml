@@ -37,20 +37,19 @@ name: Arduino CI Build (4 of 4) Arduino-wolfSSL
 
 # ** NOTE TO MAINTAINERS **
 #
-# Suggest using winmerge or similar tool to keep the 3 arduino.yml files in relative sync.
+# Consider using winmerge or similar tool to keep the 4 arduino.yml files in relative sync.
 # Although there are some specific differences, most of the contents are otherwise identical.
 #
 # See https://github.com/wolfSSL/Arduino-wolfSSL
 #
 # To test locally:
 # cd [your WOLFSSL_ROOT], e.g. cd /mnt/c/workspace/wolfssl-$USER
-# [optional checkout] e.g.     git checkout tags/v5.8.2-stable
+# [optional checkout]     e.g. git checkout tags/v5.8.2-stable
 # pushd ./IDE/ARDUINO
 # export ARDUINO_ROOT="$HOME/Arduino/libraries"
 # ./wolfssl-arduino.sh INSTALL
 # cd [your WOLFSSL_EXAMPLES_ROOT] e.g. /mnt/c/workspace/wolfssl-examples-$USER
-# cd
-
+#
 
 # START OF COMMON SECTION
 on:
@@ -111,11 +110,13 @@ jobs:
           arduino-cli lib install "Ethernet"        # Install Ethernet library
           arduino-cli lib install "Bridge"          # Pseudo-network for things like arduino:samd:tian
 
-          # arduino-cli lib install "wolfSSL"  # Install wolfSSL library from Arduino
-
       - name: Set job environment variables
         run: |
           # Script to assign some common environment variables after everything is installed
+
+          ICON_OK=$(printf "\xE2\x9C\x85")
+          ICON_FAIL=$(printf "\xE2\x9D\x8C")
+
           echo "GITHUB_WORK=$(realpath           "$GITHUB_WORKSPACE/../..")"  >> "$GITHUB_ENV"
           echo "ARDUINO_ROOT=$(realpath          "$HOME/Arduino/libraries")"  >> "$GITHUB_ENV"
 
@@ -131,6 +132,8 @@ jobs:
           # Show our custom values:
           echo "GITHUB_WORK           = $GITHUB_WORK"
           echo "ARDUINO_ROOT          = $ARDUINO_ROOT"
+
+          # WOLFSSL_EXAMPLES_ROOT is the report root, not example location
           echo "WOLFSSL_EXAMPLES_ROOT = $WOLFSSL_EXAMPLES_ROOT"
 
 
@@ -194,7 +197,7 @@ jobs:
       #
       - name: Compile Arduino Sketches for various boards
         run: |
-          # Run script to compile all the examples for each of the fqbn names in the local copy of board_list.txt
+          # Call the compile-all-examples.sh script to compile all the examples for each of the fqbn names in the local copy of board_list.txt
 
           echo "Current pwd for wolfssl-examples clone fetch: $PWD"
           echo "WOLFSSL_EXAMPLES_ROOT=$WOLFSSL_EXAMPLES_ROOT"
