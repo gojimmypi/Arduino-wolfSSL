@@ -1,20 +1,40 @@
-name: Arduino CI Build (3 of 3) Arduino-wolfSSL
+name: Arduino CI Build (4 of 4) Arduino-wolfSSL
 
-# These 3 workflows are interdependent for the current $REPO_OWNER:
-# Arduino CI Build 1: https://github.com/$REPO_OWNER/wolfssl          #  /.github/workflows/arduino.yml
-#   - Builds Arduino library from local wolfssl and fetches wolfssl-examples
 #
-# Arduino CI Build 2: https://github.com/$REPO_OWNER/wolfssl-examples #  /.github/workflows/arduino.yml
-#   - Fetches current wolfSSL from other repo
+# Test local Arduino examples with LATEST github master branch wolfssl
+#
+# These 4 workflows across 3 repos are interdependent for the current $REPO_OWNER:
+#
+# Arduino CI Build 1: https://github.com/$REPO_OWNER/wolfssl               #  /.github/workflows/arduino.yml
+#   - Builds Arduino library from local clone of wolfssl master branch
+#   - Fetches examples from https://github.com/$REPO_OWNER/wolfssl-examples
+#
+# Arduino CI Build 2: https://github.com/$REPO_OWNER/wolfssl-examples      #  /.github/workflows/arduino-release.yml
+#    - Tests examples based on latest published release of Arduino library, NOT latest on wolfssl github.
+#    - Should be identical to Arduino CI Build 3 in every way but wolfssl install.
+#    - Copies only compile script from wolfssl-examples
+#    - Builds local examples
+#    - No other repos used
+#
+# Arduino CI Build 3: https://github.com/$REPO_OWNER/wolfssl-examples      #  /.github/workflows/arduino.yml
+#   - Fetches current wolfSSL from https://github.com/$REPO_OWNER/wolfssl
 #   - Creates an updated Arduino library
 #   - Compiles local examples
+#   - Contains the source of `compile-all-examples.sh` and respective board-list.txt
 #
-# Arduino CI Build 3: https://github.com/$REPO_OWNER/Arduino-wolfssl  #  /.github/workflows/arduino.yml
-#    - Assembles and installs an updated Arduino wolfssl library
+# Arduino CI Build 4: https://github.com/$REPO_OWNER/Arduino-wolfssl       #  /.github/workflows/arduino.yml
+#    - Assembles and installs an updated Arduino wolfssl library from LOCAL wolfssl master source
 #    - Copies only compile script copied from wolfssl-examples
 #    - Builds local examples
 #    - No other repos used
 #
+# Arduino CI Build 4: https://github.com/$REPO_OWNER/Arduino-wolfssl       #  /.github/workflows/arduino-release.yml
+#    - Tests examples based on latest published release of Arduino library, NOT wolfssl github.
+#    - Should be identical to Arduino CI Build 3 in every way but wolfssl install.
+#    - Copies only compile script from wolfssl-examples
+#    - Builds local examples
+#    - No other repos used
+
 # ** NOTE TO MAINTAINERS **
 #
 # Suggest using winmerge or similar tool to keep the 3 arduino.yml files in relative sync.
@@ -98,15 +118,17 @@ jobs:
           # Script to assign some common environment variables after everything is installed
           echo "GITHUB_WORK=$(realpath           "$GITHUB_WORKSPACE/../..")"  >> "$GITHUB_ENV"
           echo "ARDUINO_ROOT=$(realpath          "$HOME/Arduino/libraries")"  >> "$GITHUB_ENV"
-          echo "WOLFSSL_EXAMPLES_ROOT=$(realpath "./")"                       >> "$GITHUB_ENV"
+
+          # Show repo-specific location of examples:
+          echo "WOLFSSL_EXAMPLES_ROOT=$(realpath "./Arduino/sketches")"       >> "$GITHUB_ENV"
 
           # Show predefined summary:
           echo "GITHUB_WORKSPACE      = $GITHUB_WORKSPACE"
 
-          # Show assigned env:
+          # Show assigned build:env values (e.g. "wolfssl", "gojimmpi" or other owners):
           echo "REPO_OWNER            = $REPO_OWNER"
 
-          # Show ours:
+          # Show our custom values:
           echo "GITHUB_WORK           = $GITHUB_WORK"
           echo "ARDUINO_ROOT          = $ARDUINO_ROOT"
           echo "WOLFSSL_EXAMPLES_ROOT = $WOLFSSL_EXAMPLES_ROOT"
