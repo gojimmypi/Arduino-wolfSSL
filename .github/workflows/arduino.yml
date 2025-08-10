@@ -206,12 +206,13 @@ jobs:
         run: |
           # Call the compile-all-examples.sh script to compile all the examples for each of the fqbn names in the local copy of board_list.txt
 
-          echo "Current pwd for wolfssl-examples clone fetch: $PWD"
+          echo "Current directory: $PWD"
           WOLFSSL_EXAMPLES_DIRECTORY="$ARDUINO_ROOT/wolfssl/examples"
           echo "WOLFSSL_EXAMPLES_DIRECTORY=$WOLFSSL_EXAMPLES_DIRECTORY"
 
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory $PWD"
+            ls
             ./compile-all-examples.sh
           popd
           # End Compile Arduino Sketches for Various Boards
