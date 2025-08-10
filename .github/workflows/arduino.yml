@@ -112,9 +112,7 @@ jobs:
           ICON_FAIL=$(printf "\xE2\x9D\x8C")
 
           echo "GITHUB_WORK=$(realpath           "$GITHUB_WORKSPACE/../..")"  >> "$GITHUB_ENV"
-
-          # Show repo-specific location of examples:
-          echo "WOLFSSL_EXAMPLES_ROOT=$(realpath "./Arduino/sketches")"       >> "$GITHUB_ENV"
+          echo "ARDUINO_ROOT=$(realpath          "$HOME/Arduino/libraries")"  >> "$GITHUB_ENV"
 
           # Show predefined summary:
           echo "GITHUB_WORKSPACE      = $GITHUB_WORKSPACE"
@@ -125,8 +123,8 @@ jobs:
           echo "GITHUB_ENV=$GITHUB_ENV"
 
           # Show our custom values:
-          # echo "GITHUB_WORK           = $GITHUB_WORK"
-          # echo "ARDUINO_ROOT          = $ARDUINO_ROOT"
+          echo "GITHUB_WORK           = $GITHUB_WORK"
+          echo "ARDUINO_ROOT          = $ARDUINO_ROOT"
 
           # WOLFSSL_EXAMPLES_ROOT is the report root, not example location
           # echo "WOLFSSL_EXAMPLES_ROOT = $WOLFSSL_EXAMPLES_ROOT"
