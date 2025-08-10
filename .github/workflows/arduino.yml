@@ -112,18 +112,17 @@ jobs:
           ICON_FAIL=$(printf "\xE2\x9D\x8C")
 
           echo "GITHUB_WORK=$(realpath           "$GITHUB_WORKSPACE/../..")"  >> "$GITHUB_ENV"
-          echo "ARDUINO_ROOT=$(realpath          "$HOME/Arduino/libraries")"  >> "$GITHUB_ENV"
 
           # Show repo-specific location of examples:
           echo "WOLFSSL_EXAMPLES_ROOT=$(realpath "./Arduino/sketches")"       >> "$GITHUB_ENV"
-
-          echo "GITHUB_ENV=$GITHUB_ENV"
 
           # Show predefined summary:
           echo "GITHUB_WORKSPACE      = $GITHUB_WORKSPACE"
 
           # Show assigned build:env values (e.g. "wolfssl", "gojimmpi" or other owners):
           echo "REPO_OWNER            = $REPO_OWNER"
+
+          echo "GITHUB_ENV=$GITHUB_ENV"
 
           # Show our custom values:
           # echo "GITHUB_WORK           = $GITHUB_WORK"
@@ -199,6 +198,7 @@ jobs:
             echo "Current directory $PWD"
             echo "Contents:"
             ls
+            find ./ -type f | sort
 
             # ensure we can execute the script here (permissions lost during curl fetch)
             chmod +x ./compile-all-examples.sh
@@ -224,8 +224,8 @@ jobs:
             echo "Current directory:           $PWD"
             ls
             # Install wolfSSL as Arduino library in ARDUINO_ROOT
-            echo "Calling ./compile-all-examples.sh INSTALL"
-            bash ./compile-all-examples.sh INSTALL
+            echo "Calling ./compile-all-examples.sh"
+            bash ./compile-all-examples.sh
           popd
           # End Compile Arduino Sketches for Various Boards
 
