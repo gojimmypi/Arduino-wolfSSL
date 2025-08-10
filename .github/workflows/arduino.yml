@@ -187,15 +187,16 @@ jobs:
           echo "WOLFSSL_EXAMPLES_DIRECTORY=$WOLFSSL_EXAMPLES_DIRECTORY"
 
           # Fetch script and board list into WOLFSSL_EXAMPLES_DIRECTORY
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o "$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
+          # TODO edit PR branch path:
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/board_list.txt          -o "$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/compile-all-examples.sh -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
 
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory:           $PWD"
 
             echo "Current directory $PWD"
             echo "Contents:"
-            ls
+            ls -al
             find ./ -type f | sort
 
             # ensure we can execute the script here (permissions lost during curl fetch)
@@ -220,8 +221,6 @@ jobs:
           echo "Change directory to Arduino examples..."
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory:           $PWD"
-            ls
-            # Install wolfSSL as Arduino library in ARDUINO_ROOT
             echo "Calling ./compile-all-examples.sh"
             bash ./compile-all-examples.sh
           popd
