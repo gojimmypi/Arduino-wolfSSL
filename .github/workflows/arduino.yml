@@ -22,23 +22,17 @@ name: Arduino CI Build (4 of 4) Arduino-wolfSSL
 #   - Compiles local examples
 #   - Contains the source of `compile-all-examples.sh` and respective board-list.txt
 #
-# Arduino CI Build 4: https://github.com/$REPO_OWNER/Arduino-wolfssl       #  /.github/workflows/arduino.yml
-#    - Assembles and installs an updated Arduino wolfssl library from LOCAL wolfssl master source
-#    - Copies only compile script copied from wolfssl-examples
+# THIS Arduino CI Build 4: https://github.com/$REPO_OWNER/Arduino-wolfssl   #  /.github/workflows/arduino.yml
+#    - Assembles and installs an updated Arduino wolfssl library from LOCAL Arduino-wolfSSL repo master (main) source
+#    - Copies only compile script and board list from wolfssl-examples (no examples copied)
 #    - Builds local examples
 #    - No other repos used
 #
-# Arduino CI Build 4: https://github.com/$REPO_OWNER/Arduino-wolfssl       #  /.github/workflows/arduino-release.yml
-#    - Tests examples based on latest published release of Arduino library, NOT wolfssl github.
-#    - Should be identical to Arduino CI Build 3 in every way but wolfssl install.
-#    - Copies only compile script from wolfssl-examples
-#    - Builds local examples
-#    - No other repos used
-
-# ** NOTE TO MAINTAINERS **
 #
-# Consider using winmerge or similar tool to keep the 4 arduino.yml files in relative sync.
-# Although there are some specific differences, most of the contents are otherwise identical.
+#                                   ** NOTE TO MAINTAINERS **
+#
+#           Consider using winmerge or similar tool to keep the 4 arduino[-release].yml files in relative sync.
+#           Although there are some specific differences, most of the contents are otherwise identical.
 #
 # See https://github.com/wolfSSL/Arduino-wolfSSL
 #
@@ -136,6 +130,14 @@ jobs:
           # WOLFSSL_EXAMPLES_ROOT is the report root, not example location
           echo "WOLFSSL_EXAMPLES_ROOT = $WOLFSSL_EXAMPLES_ROOT"
 
+    # - name: Show wolfssl-examples
+          # (not used, as wolfssl source is already here in ARduino-wolfSSL)
+
+          # end Show wolfssl-examples
+
+    # - name: Shallow clone wolfssl
+          # (not used, as wolfssl source is already here in ARduino-wolfSSL)
+          #
 
           # Install current wolfSSL as an Arduino library:
       - name: Get wolfssl-examples
@@ -181,16 +183,18 @@ jobs:
           # This repo is Arduino-wolfssl; we'll fetch the script from the wolfssl-examples for the same repository owner.
           echo "Respository owner: $REPO_OWNER"
           echo "Current directory: $PWD"
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o ./board_list.txt
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o ./compile-all-examples.sh
+          echo "Current pwd for wolfssl-examples clone fetch: $PWD"
+          WOLFSSL_EXAMPLES_DIRECTORY="$ARDUINO_ROOT/wolfssl/examples"
+          echo "WOLFSSL_EXAMPLES_DIRECTORY=$WOLFSSL_EXAMPLES_DIRECTORY"
 
-          # Normally the examples are in the `sketches` directory of wolfssl-examples repo in `./Arduino` directory.
-          # In the actual library here, they are in the local library `examples` directory.
-          sed -i 's|./sketches|./examples|g' ./compile-all-examples.sh
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/board_list.txt          -o "$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
+          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
 
-          # ensure we can execute the script here (permissions lost during curl)
-          chmod +x ./compile-all-examples.sh
-          echo "Found compile script: $(ls -al ./compile-all-examples.sh)"
+          pushd $WOLFSSL_EXAMPLES_DIRECTORY
+            # ensure we can execute the script here (permissions lost during curl fetch)
+            chmod +x ./compile-all-examples.sh
+            echo "Found compile script: $(ls -al ./compile-all-examples.sh)"
+          popd
 
       # This will fail with Arduino published wolfSSL v5.7.6 and older
       # as the examples moved. See https://github.com/wolfSSL/wolfssl/pull/8514
@@ -200,9 +204,10 @@ jobs:
           # Call the compile-all-examples.sh script to compile all the examples for each of the fqbn names in the local copy of board_list.txt
 
           echo "Current pwd for wolfssl-examples clone fetch: $PWD"
-          echo "WOLFSSL_EXAMPLES_ROOT=$WOLFSSL_EXAMPLES_ROOT"
+          WOLFSSL_EXAMPLES_DIRECTORY="$ARDUINO_ROOT/wolfssl/examples"
+          echo "WOLFSSL_EXAMPLES_DIRECTORY=$WOLFSSL_EXAMPLES_DIRECTORY"
 
-          pushd $WOLFSSL_EXAMPLES_ROOT
+          pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
           ./compile-all-examples.sh
           popd
 
