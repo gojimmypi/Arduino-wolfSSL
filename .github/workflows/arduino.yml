@@ -136,10 +136,10 @@ jobs:
           # end Show wolfssl-examples
 
     # - name: Shallow clone wolfssl
-          # (not used, as wolfssl source is already here in ARduino-wolfSSL)
+          # (not used, as wolfssl source is already here in Arduino-wolfSSL)
           #
 
-          # Install current wolfSSL as an Arduino library:
+
       - name: Get wolfssl-examples
         run: |
           # The wolfSSL examples should already be installed in this Arduino-wolfssl/examples directory
@@ -193,6 +193,7 @@ jobs:
           pushd $WOLFSSL_EXAMPLES_DIRECTORY
             # ensure we can execute the script here (permissions lost during curl fetch)
             echo "Current directory $PWD"
+            ls
             chmod +x ./compile-all-examples.sh
             echo "Found compile script: $(ls -al ./compile-all-examples.sh)"
           popd
