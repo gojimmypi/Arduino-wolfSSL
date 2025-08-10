@@ -138,6 +138,7 @@ jobs:
           # (not used, as wolfssl source is already here in Arduino-wolfSSL)
           #
 
+          # ** END ** Set job environment variables
 
       - name: Get wolfssl-examples
         run: |
@@ -146,6 +147,8 @@ jobs:
           echo "Current pwd for wolfssl-examples clone fetch: $(pwd)"
           echo "Examples found:"
           find ./examples -type f | sort
+
+          # ** END ** Get wolfssl-examples
 
       - name: Install wolfSSL Arduino library
         run: |
@@ -157,6 +160,11 @@ jobs:
           #
           # But using the current repo as the source:
           mkdir -p "$ARDUINO_ROOT/wolfssl"
+
+          # Methods of installing Arduino library:
+          #   1) arduino-cli lib install "wolfSSL"
+          #   2) manual copy of files (typical of the Arduino-wolfssl repo)
+          #   3) run ./wolfssl-arduino.sh INSTALL (typical of the wolfssl repo)
 
           # Copy all file in current directory as root of the wolfssl library
           echo "cp  [root files]     \"$ARDUINO_ROOT/wolfssl/src\""
@@ -173,6 +181,8 @@ jobs:
           echo "cp -r  \"./examples\" \"$ARDUINO_ROOT/wolfssl/examples\""
                 cp -r    ./examples    "$ARDUINO_ROOT/wolfssl/examples"
 
+          # ** END ** Install wolfSSL Arduino library
+
       - name: List installed Arduino libraries
         run: arduino-cli lib list
 
@@ -188,8 +198,39 @@ jobs:
 
           # Fetch script and board list into WOLFSSL_EXAMPLES_DIRECTORY
           # TODO edit PR branch path:
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/board_list.txt          -o "$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
-          curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/compile-all-examples.sh -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
+          curl -L "https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/board_list.txt"          -o "$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
+
+          # Check if the first line is "404: Not Found" - which would indicate the curl path above is bad.
+          FILE="$WOLFSSL_EXAMPLES_DIRECTORY/board_list.txt"
+
+          # Ensure the file exists
+          if [[ ! -f "$FILE" ]]; then
+              echo "File not found: $FILE"
+              exit 1
+          fi
+
+          # Check if the first line is "404: Not Found"
+          if [[ $(head -n 1 "$FILE") == "404: Not Found" ]]; then
+              echo "The first line is '404: Not Found'"
+              exit 1
+          fi
+
+          curl -L "https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/sketches/compile-all-examples.sh" -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
+
+          # Check if the first line is "404: Not Found" - which would indicate the curl path above is bad.
+          FILE="$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
+
+          # Ensure the file exists
+          if [[ ! -f "$FILE" ]]; then
+              echo "File not found: $FILE"
+              exit 1
+          fi
+
+          # Check if the first line is "404: Not Found"
+          if [[ $(head -n 1 "$FILE") == "404: Not Found" ]]; then
+              echo "The first line is '404: Not Found'"
+              exit 1
+          fi
 
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory:           $PWD"
@@ -204,7 +245,7 @@ jobs:
             echo "Found compile script: $(ls -al ./compile-all-examples.sh)"
           popd
 
-          # End Get compile-all-examples.sh
+          # ** END ** Get compile-all-examples.sh
 
       # This will fail with Arduino published wolfSSL v5.7.6 and older
       # as the examples moved. See https://github.com/wolfSSL/wolfssl/pull/8514
