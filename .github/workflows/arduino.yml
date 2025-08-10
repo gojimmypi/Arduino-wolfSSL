@@ -194,11 +194,11 @@ jobs:
           curl -L https://raw.githubusercontent.com/$REPO_OWNER/wolfssl-examples/examples_dev/Arduino/compile-all-examples.sh -o "$WOLFSSL_EXAMPLES_DIRECTORY/compile-all-examples.sh"
 
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
+            echo "Current directory:           $PWD"
 
             echo "Current directory $PWD"
             echo "Contents:"
             ls
-            find ./examples -type f | sort
 
             # ensure we can execute the script here (permissions lost during curl fetch)
             chmod +x ./compile-all-examples.sh
@@ -215,13 +215,14 @@ jobs:
           # Call the compile-all-examples.sh script to compile all the examples for each of the fqbn names in the local copy of board_list.txt
 
           echo "Current directory:           $PWD"
-          echo "ARDUINO_ROOT=$ARDUINO_ROOT"
+          echo "ARDUINO_ROOT:                $ARDUINO_ROOT"
           WOLFSSL_EXAMPLES_DIRECTORY="$ARDUINO_ROOT/wolfssl/examples"
-          echo "WOLFSSL_EXAMPLES_DIRECTORY = $WOLFSSL_EXAMPLES_DIRECTORY"
+          echo "WOLFSSL_EXAMPLES_DIRECTORY:  $WOLFSSL_EXAMPLES_DIRECTORY"
 
           echo "Change directory to Arduino examples..."
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory:           $PWD"
+            ls
             # Install wolfSSL as Arduino library in ARDUINO_ROOT
             echo "Calling ./wolfssl-arduino.sh INSTALL"
             bash ./wolfssl-arduino.sh INSTALL
