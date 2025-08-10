@@ -10,3 +10,5 @@
 /src/wolfcrypt/src/wolfcrypt_last.c
 /src/wolfssl/wolfcrypt/fips.h
 /gpg_refresh.sh
+/commit_squash.sh
+/**/*.bak
