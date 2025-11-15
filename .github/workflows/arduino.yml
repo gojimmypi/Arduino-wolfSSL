@@ -242,7 +242,8 @@ jobs:
           #
           #    arduino-cli lib install "wolfSSL"
           #
-          # But using the current repo as the source:
+          # But using the current repo as the source (delete for matrix cache):
+          rm -rf "$ARDUINO_ROOT/wolfssl"
           mkdir -p "$ARDUINO_ROOT/wolfssl"
 
           # Methods of installing Arduino library:
