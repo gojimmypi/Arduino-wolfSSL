@@ -352,6 +352,7 @@ jobs:
           echo "Change directory to Arduino examples..."
           pushd "$WOLFSSL_EXAMPLES_DIRECTORY"
             echo "Current directory:           $PWD"
+            ls -al
             echo "Calling ./compile-all-examples.sh"
             bash ./compile-all-examples.sh ./board_list.txt "${{ matrix.fqbn }}"
           popd
